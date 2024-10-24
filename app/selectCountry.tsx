@@ -1,5 +1,5 @@
-import { StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { useState, useEffect, memo } from 'react';
+import { StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { memo } from 'react';
 import { useRouter } from 'expo-router';
 
 import { Text, View } from '@/components/Themed';
