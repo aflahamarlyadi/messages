@@ -61,7 +61,7 @@ const EnterPhoneScreen = () => {
           <TextInput
             style={[
               styles.input,
-              { borderBottomColor: colorScheme === 'light' ? 'black' : 'white' }
+              { color: colorScheme === 'light' ? 'black' : 'white', borderBottomColor: colorScheme === 'light' ? 'black' : 'white' }
             ]}
             value={phoneNumber}
             onChangeText={setPhoneNumber}
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   countryCode: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
   },
   inputContainer: {
@@ -130,13 +130,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingBottom: 4,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
   },
   input: {
     flex: 1,
     paddingBottom: 4,
-    borderBottomWidth: 1,
-    fontSize: 32,
+    borderBottomWidth: 2,
+    fontSize: 28,
     fontWeight: 'bold',
   },
   button: {

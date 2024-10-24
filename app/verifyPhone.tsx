@@ -1,8 +1,8 @@
-import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { useState, useEffect } from 'react';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
-import { Text } from '@/components/Themed';
+import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 
@@ -13,6 +13,7 @@ const VerifyPhoneScreen = () => {
   const [code, setCode] = useState('');
   const [showCaret, setShowCaret] = useState(true);
   const { phoneNumber } = useLocalSearchParams();
+  const router = useRouter();
 
   const handleTextChange = (text: string) => {
     if (text.length <= CELL_COUNT) {
@@ -47,19 +48,30 @@ const VerifyPhoneScreen = () => {
 
         <View style={styles.codeFieldContainer}>
           {Array.from({ length: CELL_COUNT }).map((_, index) => (
-            <View key={index} style={styles.codeFieldCell}>
+            <View
+              key={index}
+              style={[
+                styles.codeFieldCell,
+                { borderBottomColor: colorScheme === 'light' ? 'black' : 'white' }
+              ]}
+            >
               <Text style={styles.codeFieldText}>
                 {code[index] || ''}
               </Text>
               {showCaret && index === code.length && (
-                <View style={styles.caret} />
+                <View
+                  style={[
+                    styles.caret,
+                    { backgroundColor: colorScheme === 'light' ? 'black' : 'white' }
+                  ]}
+                />
               )}
             </View>
           ))}
         </View>
 
         <Text style={styles.subtitle}>
-          Sent to {phoneNumber}
+          Sent to <Text style={styles.subtitleEmphasis}>{phoneNumber}</Text>
         </Text>
       </View>
 
@@ -94,6 +106,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'gray',
   },
+  subtitleEmphasis: {
+    fontWeight: 'bold',
+  },
   codeFieldContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -104,17 +119,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: 4,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
   },
   codeFieldText: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
   },
   caret: {
     width: 2,
-    height: 40,
-    backgroundColor: 'black',
+    height: '80%',
     position: 'absolute',
   },
   hiddenInput: {

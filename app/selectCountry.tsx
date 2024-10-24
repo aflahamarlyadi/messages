@@ -3,6 +3,7 @@ import { useState, useEffect, memo } from 'react';
 import { Stack, useRouter } from 'expo-router';
 
 import { Text, View } from '@/components/Themed';
+import { useColorScheme } from '@/components/useColorScheme';
 import { countries } from '@/constants/Countries';
 
 const CountryItem = memo(({ item, onSelect }: { item: Country; onSelect: (country: Country) => void }) => {
@@ -16,6 +17,7 @@ const CountryItem = memo(({ item, onSelect }: { item: Country; onSelect: (countr
 });
 
 export default function SelectCountryModal() {
+  const colorScheme = useColorScheme();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredCountries, setFilteredCountries] = useState(countries);
@@ -42,6 +44,9 @@ export default function SelectCountryModal() {
         headerSearchBarOptions: {
           placeholder: 'Search countries',
           onChangeText: (event) => setSearchQuery(event.nativeEvent.text),
+          hintTextColor: 'gray',
+          headerIconColor: colorScheme === 'light' ? 'black' : 'white',
+          textColor: colorScheme === 'light' ? 'black' : 'white',
         },
       }} />
       <FlatList
