@@ -1,6 +1,6 @@
 import { StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { memo } from 'react';
-import { useRouter } from 'expo-router';
+import { useState, useEffect, memo } from 'react';
+import { Stack, useRouter } from 'expo-router';
 
 import { Text, View } from '@/components/Themed';
 import { countries } from '@/constants/Countries';
@@ -17,6 +17,8 @@ const CountryItem = memo(({ item, onSelect }: { item: Country; onSelect: (countr
 
 export default function SelectCountryModal() {
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredCountries, setFilteredCountries] = useState(countries);
 
   const handleCountrySelect = (country: Country) => {
     router.push({
@@ -25,10 +27,25 @@ export default function SelectCountryModal() {
     });
   };
 
+  useEffect(() => {
+    const lowercasedQuery = searchQuery.toLowerCase();
+    const filtered = countries.filter((country) =>
+      country.name.toLowerCase().startsWith(lowercasedQuery) ||
+      country.callingCode.includes(lowercasedQuery)
+    );
+    setFilteredCountries(filtered);
+  }, [searchQuery]);
+
   return (
     <View style={styles.container}>
+      <Stack.Screen options={{
+        headerSearchBarOptions: {
+          placeholder: 'Search countries',
+          onChangeText: (event) => setSearchQuery(event.nativeEvent.text),
+        },
+      }} />
       <FlatList
-        data={countries}
+        data={filteredCountries}
         keyExtractor={(item) => item.code}
         renderItem={({ item }) => <CountryItem item={item} onSelect={handleCountrySelect} />}
       />
@@ -44,7 +61,8 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    paddingVertical: 16,
+    marginHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
