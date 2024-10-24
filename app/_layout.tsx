@@ -66,6 +66,10 @@ function RootLayoutNav() {
             headerTitle: 'Select Country',
           }}
         />
+        <Stack.Screen
+          name="verifyPhone"
+          options={{ headerShown: false }}
+        />
       </Stack>
     </ThemeProvider>
   );

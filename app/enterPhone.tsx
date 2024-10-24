@@ -14,7 +14,7 @@ interface Country {
   flag: string;
 }
 
-export default function EnterPhoneNumberScreen() {
+const EnterPhoneScreen = () => {
   const colorScheme = useColorScheme();
   const router = useRouter();
   const { selectedCountry } = useLocalSearchParams();
@@ -38,6 +38,10 @@ export default function EnterPhoneNumberScreen() {
 
   const openSelectCountry = () => {
     router.push('/selectCountry');
+  };
+
+  const openVerifyPhone = () => {
+    router.push(`/verifyPhone?phoneNumber=${phoneNumber}`);
   };
 
   return (
@@ -66,7 +70,12 @@ export default function EnterPhoneNumberScreen() {
               styles.input,
               { borderBottomColor: colorScheme === 'light' ? 'black' : 'white' }
             ]}
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
             keyboardType='numeric'
+            autoFocus={true}
+            cursorColor='black'
+            selectionColor='#808080'
           />
         </View>
 
@@ -81,6 +90,7 @@ export default function EnterPhoneNumberScreen() {
           styles.button,
           { backgroundColor: Colors[colorScheme ?? 'light'].tint }
         ]}
+        onPress={openVerifyPhone}
       >
         <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
@@ -88,6 +98,8 @@ export default function EnterPhoneNumberScreen() {
     </View>
   );
 }
+
+export default EnterPhoneScreen;
 
 const styles = StyleSheet.create({
   area: {
@@ -124,10 +136,12 @@ const styles = StyleSheet.create({
   selectCountry: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingBottom: 4,
     borderBottomWidth: 1,
   },
   input: {
     flex: 1,
+    paddingBottom: 4,
     borderBottomWidth: 1,
     fontSize: 32,
     fontWeight: 'bold',
@@ -143,4 +157,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
   },
-})
+});
