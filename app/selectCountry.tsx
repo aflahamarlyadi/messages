@@ -3,10 +3,11 @@ import { useState, useEffect, memo } from 'react';
 import { useRouter } from 'expo-router';
 
 import { Text, View } from '@/components/Themed';
+import { countries } from '@/constants/Countries';
 
 interface Country {
   name: string;
-  alpha2Code: string;
+  code: string;
   callingCode: string;
   flag: string;
 }
@@ -24,17 +25,6 @@ const CountryItem = memo(({ item, onSelect }: { item: Country; onSelect: (countr
 export default function SelectCountryModal() {
   const router = useRouter();
 
-  const [countries, setCountries] = useState<Country[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const getFlag = (countryCode: string) => {
-    const codePoints = countryCode
-      .toUpperCase()
-      .split('')
-      .map(char => 0x1F1E6 + char.charCodeAt(0) - 65);
-    return String.fromCodePoint(...codePoints);
-  };
-
   const handleCountrySelect = (country: Country) => {
     router.push({
       pathname: '/enterPhone', 
@@ -42,37 +32,13 @@ export default function SelectCountryModal() {
     });
   };
 
-  useEffect(() => {
-    fetch("https://restcountries.com/v2/all")
-      .then(response => response.json())
-      .then(data => {
-        const countryData = data.map((item: any) => ({
-          name: item.name,
-          alpha2Code: item.alpha2Code,
-          callingCode: `+${item.callingCodes[0]}`,
-          flag: getFlag(item.alpha2Code),
-        }));
-
-        setCountries(countryData);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error(error);
-        setLoading(false);
-      });
-  }, []);
-
   return (
     <View style={styles.container}>
-    {loading ? (
-      <ActivityIndicator size="large" color="black" />
-    ) : (
       <FlatList
         data={countries}
-        keyExtractor={(item) => item.alpha2Code}
+        keyExtractor={(item) => item.code}
         renderItem={({ item }) => <CountryItem item={item} onSelect={handleCountrySelect} />}
       />
-    )}
   </View>
   );
 }
