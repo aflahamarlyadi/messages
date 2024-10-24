@@ -7,13 +7,6 @@ import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 
-interface Country {
-  name: string;
-  alpha2Code: string;
-  callingCode: string;
-  flag: string;
-}
-
 const EnterPhoneScreen = () => {
   const colorScheme = useColorScheme();
   const router = useRouter();
@@ -21,7 +14,7 @@ const EnterPhoneScreen = () => {
 
   const [country, setCountry] = useState<Country>({
     name: 'United States',
-    alpha2Code: 'US',
+    code: 'US',
     callingCode: '+1',
     flag: '🇺🇸',
   });

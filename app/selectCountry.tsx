@@ -5,13 +5,6 @@ import { useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
 import { countries } from '@/constants/Countries';
 
-interface Country {
-  name: string;
-  code: string;
-  callingCode: string;
-  flag: string;
-}
-
 const CountryItem = memo(({ item, onSelect }: { item: Country; onSelect: (country: Country) => void }) => {
   return (
     <TouchableOpacity onPress={() => onSelect(item)} style={styles.itemContainer}>
