@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, Pressable } from 'react-native';
 import React from 'react';
 import { Link } from 'expo-router';
 
@@ -6,7 +6,7 @@ import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 
-export default function WelcomeScreen() {
+const WelcomeScreen = () => {
   const colorScheme = useColorScheme();
 
   return (
@@ -16,20 +16,22 @@ export default function WelcomeScreen() {
         <Text style={styles.title}>Welcome to Messages</Text>
       </View>
 
-      <Link href={'/enterPhone'} replace asChild 
+      <Link href={'/enterPhoneNumber'} replace asChild 
         style={[
           styles.button,
           { backgroundColor: Colors[colorScheme ?? 'light'].tint }
         ]}
       >
-        <TouchableOpacity>
+        <Pressable>
           <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
+        </Pressable>
       </Link>
 
     </View>
   );
 }
+
+export default WelcomeScreen;
 
 const styles = StyleSheet.create({
   area: {

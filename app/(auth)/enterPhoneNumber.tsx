@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, TextInput, Pressable } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 
@@ -7,7 +7,7 @@ import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 
-const EnterPhoneScreen = () => {
+const EnterPhoneNumberScreen = () => {
   const colorScheme = useColorScheme();
   const router = useRouter();
   const { selectedCountry } = useLocalSearchParams();
@@ -33,8 +33,8 @@ const EnterPhoneScreen = () => {
     router.push('/selectCountry');
   };
 
-  const openVerifyPhone = () => {
-    router.push(`/verifyPhone?phoneNumber=${phoneNumber}`);
+  const handleNextPress = () => {
+    router.push(`/verifyPhoneNumber?phoneNumber=${phoneNumber}`);
   };
 
   return (
@@ -46,7 +46,7 @@ const EnterPhoneScreen = () => {
         </Text>
 
         <View style={styles.inputContainer}>
-          <TouchableOpacity
+          <Pressable
             style={[
               styles.selectCountry,
               { borderBottomColor: colorScheme === 'light' ? 'black' : 'white' }
@@ -56,7 +56,7 @@ const EnterPhoneScreen = () => {
             <Text style={styles.flag}>{country.flag}</Text>
             <Text style={styles.countryCode}>{country.callingCode}</Text>
             <MaterialCommunityIcons name="chevron-down" size={24} color={colorScheme === 'light' ? 'black' : 'white'}  />
-          </TouchableOpacity>
+          </Pressable>
 
           <TextInput
             style={[
@@ -78,21 +78,21 @@ const EnterPhoneScreen = () => {
 
       </View>
 
-      <TouchableOpacity
+      <Pressable
         style={[
           styles.button,
           { backgroundColor: Colors[colorScheme ?? 'light'].tint }
         ]}
-        onPress={openVerifyPhone}
+        onPress={handleNextPress}
       >
         <Text style={styles.buttonText}>Next</Text>
-      </TouchableOpacity>
+      </Pressable>
 
     </View>
   );
 }
 
-export default EnterPhoneScreen;
+export default EnterPhoneNumberScreen;
 
 const styles = StyleSheet.create({
   area: {

@@ -1,4 +1,4 @@
-import { StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, FlatList, Pressable } from 'react-native';
 import { useState, useEffect, memo } from 'react';
 import { Stack, useRouter } from 'expo-router';
 
@@ -8,15 +8,15 @@ import { countries } from '@/constants/Countries';
 
 const CountryItem = memo(({ item, onSelect }: { item: Country; onSelect: (country: Country) => void }) => {
   return (
-    <TouchableOpacity onPress={() => onSelect(item)} style={styles.itemContainer}>
+    <Pressable onPress={() => onSelect(item)} style={styles.itemContainer}>
       <Text style={styles.flag}>{item.flag}</Text>
       <Text style={styles.name}>{item.name}</Text>
       <Text style={styles.callingCode}>{item.callingCode}</Text>
-    </TouchableOpacity>
+    </Pressable>
   );
 });
 
-export default function SelectCountryModal() {
+const SelectCountryModal = () => {
   const colorScheme = useColorScheme();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
@@ -24,7 +24,7 @@ export default function SelectCountryModal() {
 
   const handleCountrySelect = (country: Country) => {
     router.push({
-      pathname: '/enterPhone', 
+      pathname: '/enterPhoneNumber', 
       params: { selectedCountry: JSON.stringify(country) }
     });
   };
@@ -57,6 +57,8 @@ export default function SelectCountryModal() {
   </View>
   );
 }
+
+export default SelectCountryModal;
 
 const styles = StyleSheet.create({
   container: {

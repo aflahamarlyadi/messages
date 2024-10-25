@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, TextInput, Pressable } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
@@ -8,7 +8,7 @@ import Colors from '@/constants/Colors';
 
 const CELL_COUNT = 6;
 
-const VerifyPhoneScreen = () => {
+const VerifyPhoneNumberScreen = () => {
   const colorScheme = useColorScheme();
   const [code, setCode] = useState('');
   const [showCaret, setShowCaret] = useState(true);
@@ -28,6 +28,10 @@ const VerifyPhoneScreen = () => {
 
     return () => clearInterval(caretInterval);
   }, []);
+
+  const handleNextPress = () => {
+    router.push('/(messages)');
+  };
 
   return (
     <View style={styles.area}>
@@ -75,16 +79,17 @@ const VerifyPhoneScreen = () => {
         </Text>
       </View>
 
-      <TouchableOpacity
+      <Pressable
         style={[styles.button, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
+        onPress={handleNextPress}
       >
         <Text style={styles.buttonText}>Next</Text>
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 }
 
-export default VerifyPhoneScreen;
+export default VerifyPhoneNumberScreen;
 
 const styles = StyleSheet.create({
   area: {
