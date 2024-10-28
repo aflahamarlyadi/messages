@@ -19,8 +19,8 @@ const CountryItem = memo(({ item, onSelect }: { item: Country; onSelect: (countr
 const SelectCountryModal = () => {
   const colorScheme = useColorScheme();
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filteredCountries, setFilteredCountries] = useState(countries);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [filteredCountries, setFilteredCountries] = useState<Country[]>(countries);
 
   const handleCountrySelect = (country: Country) => {
     router.push({

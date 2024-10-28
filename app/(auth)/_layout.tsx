@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
 
-export default function MessagesLayout() {
+export default function AuthLayout() {
   return (
     <Stack>
       <Stack.Screen

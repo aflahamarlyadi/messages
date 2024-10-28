@@ -1,6 +1,7 @@
-import { StyleSheet, TextInput, Pressable } from 'react-native';
+import { StyleSheet, TextInput, Pressable, ActivityIndicator, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
 import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -10,10 +11,12 @@ const CELL_COUNT = 6;
 
 const VerifyPhoneNumberScreen = () => {
   const colorScheme = useColorScheme();
-  const [code, setCode] = useState('');
-  const [showCaret, setShowCaret] = useState(true);
-  const { phoneNumber } = useLocalSearchParams();
   const router = useRouter();
+  const { callingCode, phoneNumber, verificationId } = useLocalSearchParams<{ callingCode: string, phoneNumber: string, verificationId: string }>();
+
+  const [code, setCode] = useState<string>('');
+  const [showCaret, setShowCaret] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleTextChange = (text: string) => {
     if (text.length <= CELL_COUNT) {
@@ -29,8 +32,32 @@ const VerifyPhoneNumberScreen = () => {
     return () => clearInterval(caretInterval);
   }, []);
 
-  const handleNextPress = () => {
-    router.push('/(messages)');
+  const confirmCode = async () => {
+    setLoading(true);
+
+    try {
+      const credential = auth.PhoneAuthProvider.credential(verificationId, code);
+      await auth().signInWithCredential(credential);
+      router.replace('/(messages)');
+    } catch (error) {
+      const authError = error as FirebaseAuthTypes.PhoneAuthError;
+      if (authError.code === 'auth/invalid-verification-code') {
+        Alert.alert(
+          'Incorrect code',
+          'The code entered is incorrect. Please try again.',
+          [{ text: 'OK' }]
+        );
+        setCode('');
+      } else {
+        Alert.alert(
+          'Something went wrong',
+          'An unexpected error occurred. Please try again later.',
+          [{ text: 'OK' }]
+        );
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -75,16 +102,26 @@ const VerifyPhoneNumberScreen = () => {
         </View>
 
         <Text style={styles.subtitle}>
-          Sent to <Text style={styles.subtitleEmphasis}>{phoneNumber}</Text>
+          Sent to <Text style={styles.subtitleEmphasis}>{callingCode}{phoneNumber}</Text>
         </Text>
       </View>
 
       <Pressable
-        style={[styles.button, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
-        onPress={handleNextPress}
+        style={[styles.button, code.length !== CELL_COUNT ? { backgroundColor: 'gray' } : { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
+        onPress={confirmCode}
+        disabled={loading || code.length !== CELL_COUNT}
       >
         <Text style={styles.buttonText}>Next</Text>
       </Pressable>
+
+      {loading && (
+        <View style={[StyleSheet.absoluteFill, styles.loadingContainer]}>
+          <View style={styles.loading}>
+            <ActivityIndicator size="large" />
+            <Text>Verifying code...</Text>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -150,5 +187,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
+  },
+  loadingContainer: {
+    zIndex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loading: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    padding: 28,
+    borderRadius: 2,
   },
 });
