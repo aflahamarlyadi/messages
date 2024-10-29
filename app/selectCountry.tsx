@@ -16,16 +16,17 @@ const CountryItem = memo(({ item, onSelect }: { item: Country; onSelect: (countr
   );
 });
 
-const SelectCountryModal = () => {
+const SelectCountryScreen = () => {
   const colorScheme = useColorScheme();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filteredCountries, setFilteredCountries] = useState<Country[]>(countries);
 
   const handleCountrySelect = (country: Country) => {
-    router.push({
-      pathname: '/enterPhoneNumber', 
-      params: { selectedCountry: JSON.stringify(country) }
+    router.back();
+    router.replace({
+      pathname: '/enterPhoneNumber',
+      params: { selectedCountry: JSON.stringify(country) },
     });
   };
 
@@ -58,7 +59,7 @@ const SelectCountryModal = () => {
   );
 }
 
-export default SelectCountryModal;
+export default SelectCountryScreen;
 
 const styles = StyleSheet.create({
   container: {

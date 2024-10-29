@@ -1,12 +1,15 @@
+import { ActivityIndicator } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Slot, Redirect } from 'expo-router';
+import { useRouter, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useState, useEffect } from 'react';
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
+import { View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import { AuthProvider, useAuth } from '@/context/AuthContext';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -43,35 +46,17 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
-  const [initializing, setInitializing] = useState<boolean>(true);
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
-
-  const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
-    setUser(user);
-    if (initializing) setInitializing(false);
-  }
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber;
-  }, []);
-
-  if (initializing) return null;
-
-  if (user) {
-    return (
+  return (
+    <AuthProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Redirect href="/(messages)" />
-        <Slot />
+        <Stack>
+          <Stack.Screen name="(app)" options={{ headerShown: false }} />
+          <Stack.Screen name="welcome" options={{ headerShown: false }} />
+          <Stack.Screen name="enterPhoneNumber" options={{ headerShown: false }} />
+          <Stack.Screen name="selectCountry" options={{ title: 'Select Country' }} />
+          <Stack.Screen name="verifyPhoneNumber" options={{ headerShown: false }} />
+        </Stack>
       </ThemeProvider>
-    );
-  } else {
-    return (
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Redirect href="/(auth)" />
-        <Slot />
-      </ThemeProvider>
-    );
-  }
-  
+    </AuthProvider>
+  );
 }

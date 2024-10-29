@@ -1,10 +1,25 @@
-import { Stack } from 'expo-router';
+import { ActivityIndicator } from 'react-native';
+import { Redirect, Stack } from 'expo-router';
 
+import { View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
+import { useAuth } from '@/context/AuthContext';
 
 export default function MessagesLayout() {
   const colorScheme = useColorScheme();
+
+  const { user, initializing } = useAuth();
+
+  if (initializing) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  } else if (!user) {
+    return <Redirect href="/welcome" />;
+  }
 
   return (
     <Stack>
@@ -19,7 +34,7 @@ export default function MessagesLayout() {
         }}
       />
       <Stack.Screen
-        name="[id]"
+        name="settings"
       />
     </Stack>
   );

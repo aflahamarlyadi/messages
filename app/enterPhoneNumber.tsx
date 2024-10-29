@@ -1,17 +1,22 @@
-import { StyleSheet, TextInput, Pressable, Modal, ActivityIndicator, Alert } from 'react-native';
+import { StyleSheet, TextInput, Pressable, ActivityIndicator, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
+import { useAuth } from '@/context/AuthContext';
 
 const EnterPhoneNumberScreen = () => {
   const colorScheme = useColorScheme();
+  
   const router = useRouter();
+  
+  const { signInWithPhoneNumber } = useAuth();
+  
   const { selectedCountry } = useLocalSearchParams<{ selectedCountry: string }>();
+  
   const [country, setCountry] = useState<Country>({
     name: 'United States',
     code: 'US',
@@ -33,24 +38,22 @@ const EnterPhoneNumberScreen = () => {
     router.push('/selectCountry');
   };
 
-  const verifyPhoneNumber = async () => {
+  const handleNextPress = async () => {
     setLoading(true);
 
     try {
-      const confirmation = await auth().signInWithPhoneNumber(`${country.callingCode}${phoneNumber}`);
+      await signInWithPhoneNumber(`${country.callingCode}${phoneNumber}`)
       router.push({
         pathname: '/verifyPhoneNumber',
-        params: {
-          callingCode: country.callingCode,
-          phoneNumber: phoneNumber,
-          verificationId: confirmation.verificationId,
-        },
+        params: { 
+          callingCode: `${country.callingCode}`,
+          phoneNumber: `${phoneNumber}`,
+        }
       });
-    } catch (error) {
-      const authError = error as FirebaseAuthTypes.PhoneAuthError;
-      if (authError.code === 'auth/invalid-phone-number') {
+    } catch (error: any) {
+      if (error.code === 'auth/invalid-phone-number') {
         Alert.alert(
-          'Invalid Phone Number',
+          'Invalid phone number',
           `${country.callingCode}${phoneNumber} is not a valid phone number.`,
           [{ text: 'OK' }]
         );
@@ -110,7 +113,7 @@ const EnterPhoneNumberScreen = () => {
           styles.button,
           !phoneNumber ? { backgroundColor: 'gray' } : { backgroundColor: Colors[colorScheme ?? 'light'].tint },
         ]}
-        onPress={verifyPhoneNumber}
+        onPress={handleNextPress}
         disabled={loading || !phoneNumber}
       >
         <Text style={styles.buttonText}>Next</Text>

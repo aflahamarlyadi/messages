@@ -1,18 +1,23 @@
 import { StyleSheet, TextInput, Pressable, ActivityIndicator, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
 import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 
+import { useAuth } from '@/context/AuthContext';
+
 const CELL_COUNT = 6;
 
 const VerifyPhoneNumberScreen = () => {
   const colorScheme = useColorScheme();
+
   const router = useRouter();
-  const { callingCode, phoneNumber, verificationId } = useLocalSearchParams<{ callingCode: string, phoneNumber: string, verificationId: string }>();
+
+  const { confirmCode } = useAuth();
+
+  const { callingCode, phoneNumber } = useLocalSearchParams<{ callingCode: string, phoneNumber: string }>();
 
   const [code, setCode] = useState<string>('');
   const [showCaret, setShowCaret] = useState<boolean>(true);
@@ -32,16 +37,14 @@ const VerifyPhoneNumberScreen = () => {
     return () => clearInterval(caretInterval);
   }, []);
 
-  const confirmCode = async () => {
+  const handleNextPress = async () => {
     setLoading(true);
 
     try {
-      const credential = auth.PhoneAuthProvider.credential(verificationId, code);
-      await auth().signInWithCredential(credential);
-      router.replace('/(messages)');
-    } catch (error) {
-      const authError = error as FirebaseAuthTypes.PhoneAuthError;
-      if (authError.code === 'auth/invalid-verification-code') {
+      await confirmCode(code);
+      router.replace('/');
+    } catch (error: any) {
+      if (error.code === 'auth/invalid-verification-code') {
         Alert.alert(
           'Incorrect code',
           'The code entered is incorrect. Please try again.',
@@ -108,7 +111,7 @@ const VerifyPhoneNumberScreen = () => {
 
       <Pressable
         style={[styles.button, code.length !== CELL_COUNT ? { backgroundColor: 'gray' } : { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
-        onPress={confirmCode}
+        onPress={handleNextPress}
         disabled={loading || code.length !== CELL_COUNT}
       >
         <Text style={styles.buttonText}>Next</Text>
