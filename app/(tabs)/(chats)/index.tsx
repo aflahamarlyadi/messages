@@ -1,43 +1,33 @@
-import { StyleSheet, Pressable } from 'react-native';
+import { StyleSheet, Pressable, FlatList } from 'react-native';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 
 import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
-import { useAuth } from '@/context/AuthContext';
+import firestore from '@react-native-firebase/firestore';
 
-const MessagesScreen = () => {
+const ChatsScreen = () => {
   const colorScheme = useColorScheme();
-
   const router = useRouter();
+  const [chats, setChats] = useState<Chat[]>([]);
 
-  const { signOut } = useAuth();
-
-  const handleLogOutPress = async () => {
-    await signOut();
-  };
+  const handleChatPress = (chatId: string) => {
+    router.push(`/(tabs)/(chats)/${chatId}`);
+  }
 
   return (
     <View style={styles.container}>
-      <Pressable
-        onPress={handleLogOutPress}
-      >
-        <Text style={styles.title}>Log out</Text>
-      </Pressable>
     </View>
   );
-}
+};
 
-export default MessagesScreen;
+export default ChatsScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
   },
 });

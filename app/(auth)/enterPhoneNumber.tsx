@@ -2,7 +2,7 @@ import { StyleSheet, TextInput, Pressable, ActivityIndicator, Alert } from 'reac
 import { useState, useEffect } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
@@ -87,7 +87,7 @@ const EnterPhoneNumberScreen = () => {
           >
             <Text style={styles.flag}>{country.flag}</Text>
             <Text style={styles.countryCode}>{country.callingCode}</Text>
-            <MaterialCommunityIcons name="chevron-down" size={24} color={colorScheme === 'light' ? 'black' : 'white'}  />
+            <Ionicons name="chevron-down" size={24} color={colorScheme === 'light' ? 'black' : 'white'}  />
           </Pressable>
 
           <TextInput

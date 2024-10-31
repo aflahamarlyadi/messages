@@ -42,7 +42,6 @@ const VerifyPhoneNumberScreen = () => {
 
     try {
       await confirmCode(code);
-      router.replace('/');
     } catch (error: any) {
       if (error.code === 'auth/invalid-verification-code') {
         Alert.alert(

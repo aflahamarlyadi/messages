@@ -1,5 +1,4 @@
 import { StyleSheet, Pressable } from 'react-native';
-import { useRouter } from 'expo-router';
 
 import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -8,8 +7,6 @@ import { useAuth } from '@/context/AuthContext';
 
 const SettingsScreen = () => {
   const colorScheme = useColorScheme();
-
-  const router = useRouter();
 
   const { signOut } = useAuth();
 

@@ -47,11 +47,8 @@ function RootLayoutNav() {
     <AuthProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
-          <Stack.Screen name="(app)" options={{ headerShown: false }} />
-          <Stack.Screen name="welcome" options={{ headerShown: false }} />
-          <Stack.Screen name="enterPhoneNumber" options={{ headerShown: false }} />
-          <Stack.Screen name="selectCountry" options={{ title: 'Select Country' }} />
-          <Stack.Screen name="verifyPhoneNumber" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         </Stack>
       </ThemeProvider>
     </AuthProvider>

@@ -33,6 +33,15 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [confirm, setConfirm] = useState<FirebaseAuthTypes.ConfirmationResult | null>(null);
   const [initializing, setInitializing] = useState<boolean>(true);
 
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged((user: FirebaseAuthTypes.User | null) => {
+      setUser(user);
+      if (initializing) setInitializing(false);
+    });
+
+    return subscriber;
+  }, []);
+
   const signInWithPhoneNumber = async (phoneNumber: string) => {
     const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
     setConfirm(confirmation);
@@ -48,15 +57,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const signOut = async () => {
     await auth().signOut();
   };
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged((user: FirebaseAuthTypes.User | null) => {
-      setUser(user);
-      if (initializing) setInitializing(false);
-    });
-
-    return subscriber;
-  }, []);
 
   return (
     <AuthContext.Provider
