@@ -1,6 +1,7 @@
-import { Stack } from 'expo-router';
+import { Pressable } from 'react-native';
+import { Stack, Link } from 'expo-router';
 
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 
@@ -10,7 +11,7 @@ export default function ChatsLayout() {
   return (
     <Stack>
       <Stack.Screen
-        name="index"
+        name='index'
         options={{
           title: 'Chats',
           headerBackVisible: false,
@@ -18,16 +19,20 @@ export default function ChatsLayout() {
           headerTransparent: true,
           headerBlurEffect: 'regular',
           headerRight: () => (
-            <MaterialCommunityIcons 
-              name="square-edit-outline" 
-              size={24} 
-              color={ Colors[colorScheme ?? 'light'].tint }
-            />
+            <Link href='/(modals)/newChat' asChild>
+              <Pressable>
+                <Ionicons 
+                  name='create-outline'
+                  size={24} 
+                  color={ Colors[colorScheme ?? 'light'].tint }
+                />
+              </Pressable>
+            </Link>
           ),
         }}
       />
       <Stack.Screen
-        name="[id]"
+        name='[id]'
       />
     </Stack>
   );

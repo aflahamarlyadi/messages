@@ -24,10 +24,7 @@ const SelectCountryScreen = () => {
 
   const handleCountrySelect = (country: Country) => {
     router.back();
-    router.replace({
-      pathname: '/enterPhoneNumber',
-      params: { selectedCountry: JSON.stringify(country) },
-    });
+    router.setParams({ selectedCountry: JSON.stringify(country) });
   };
 
   useEffect(() => {
