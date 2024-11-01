@@ -5,13 +5,15 @@ import { useState } from 'react';
 import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
+import { useContacts } from '@/context/ContactsContext';
 
 const AddMembersModal = () => {
   const colorScheme = useColorScheme();
   
   const router = useRouter();
 
-  const [contacts, setContacts] = useState([]);
+  const { contacts, loading, error } = useContacts();
+
   const [groupMembers, setGroupMembers] = useState([]);
 
   return (

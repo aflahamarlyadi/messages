@@ -1,18 +1,20 @@
 import { StyleSheet, Pressable, TextInput } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Stack, useRouter, useLocalSearchParams } from 'expo-router';
-import { doc, getDoc } from '@react-native-firebase/firestore';
 
 import { Ionicons } from '@expo/vector-icons';
 import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
+import { useContacts } from '@/context/ContactsContext';
 
 const NewContactModal = () => {
   const colorScheme = useColorScheme();
   
   const router = useRouter();
   
+  const { createContact } = useContacts();
+
   const { selectedCountry } = useLocalSearchParams<{ selectedCountry: string }>();
   
   const [country, setCountry] = useState<Country>({
@@ -30,6 +32,7 @@ const NewContactModal = () => {
     if (selectedCountry) {
       const parsedCountry: Country = JSON.parse(selectedCountry);
       setCountry(parsedCountry);
+      setCallingCode(country.callingCode);
       setPhoneNumber('');
     }
   }, [selectedCountry]);
@@ -38,15 +41,25 @@ const NewContactModal = () => {
     router.push('/selectCountry');
   };
 
+  const handleSave = async () => {
+    const success = await createContact({
+      firstName,
+      lastName,
+      phoneNumber: `${country.callingCode}${phoneNumber}`
+    });
+    
+    if (success) {
+      router.dismissAll();
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Stack.Screen
         options={{
           headerRight: () => (
             <Pressable
-              onPress={() => {
-                router.dismissAll();
-              }}
+              onPress={handleSave}
               style={({ pressed }) => ({
                 opacity: pressed ? 0.5 : 1,
               })}
@@ -165,7 +178,7 @@ const styles = StyleSheet.create({
   phoneContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 8,
     paddingVertical: 12,
     paddingHorizontal: 16,
     backgroundColor: 'transparent',

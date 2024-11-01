@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 
 import { useColorScheme } from '@/components/useColorScheme';
 import { AuthProvider } from '@/context/AuthContext';
+import { ContactsProvider } from '@/context/ContactsContext';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -45,26 +46,28 @@ function RootLayoutNav() {
 
   return (
     <AuthProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-          <Stack.Screen name='(auth)' options={{ headerShown: false }} />
-          <Stack.Screen name='(modals)' options={{ headerShown: false }} />
-          <Stack.Screen 
-            name='selectCountry'
-            options={{
-              title: 'Select Country',
-            }} 
-          />
-          <Stack.Screen 
-            name='newContact'
-            options={{
-              title: 'New Contact',
-              presentation: 'modal',
-            }} 
-          />
-        </Stack>
-      </ThemeProvider>
+      <ContactsProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+            <Stack.Screen name='(auth)' options={{ headerShown: false }} />
+            <Stack.Screen name='(modals)' options={{ headerShown: false }} />
+            <Stack.Screen 
+              name='selectCountry'
+              options={{
+                title: 'Select Country',
+              }} 
+              />
+            <Stack.Screen 
+              name='newContact'
+              options={{
+                title: 'New Contact',
+                presentation: 'modal',
+              }} 
+            />
+          </Stack>
+        </ThemeProvider>
+      </ContactsProvider>
     </AuthProvider>
   );
 }

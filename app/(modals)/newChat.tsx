@@ -5,10 +5,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
+import { useContacts } from '@/context/ContactsContext';
 
 const NewChatModal = () => {
   const colorScheme = useColorScheme();
+
   const router = useRouter();
+
+  const { contacts, loading, error } = useContacts();
 
   return (
     <View style={styles.container}>

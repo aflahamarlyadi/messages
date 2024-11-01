@@ -22,6 +22,10 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "permissions": [
+        "android.permission.READ_CONTACTS",
+        "android.permission.WRITE_CONTACTS"
+      ],
       "package": "com.aflahamarlyadi.messages",
       "googleServicesFile": "./google-services.json"
     },
@@ -40,6 +44,12 @@
 					}
 				}
 			],
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Allow $(PRODUCT_NAME) to access your contacts."
+        }
+      ],
 			"@react-native-firebase/app",
 			"@react-native-firebase/auth"
     ],
