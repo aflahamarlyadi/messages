@@ -1,6 +1,11 @@
 import { Stack } from 'expo-router';
 
+import { useColorScheme } from '@/components/useColorScheme';
+import Colors from '@/constants/Colors';
+
 export default function SettingsLayout() {
+  const colorScheme = useColorScheme();
+  
   return (
     <Stack>
       <Stack.Screen
@@ -9,8 +14,9 @@ export default function SettingsLayout() {
           title: 'Settings',
           headerBackVisible: false,
           headerLargeTitle: true,
-          headerTransparent: true,
-          headerBlurEffect: 'regular',
+          headerStyle: {
+            backgroundColor: Colors[colorScheme ?? 'light'].background
+          },
         }}
       />
     </Stack>
