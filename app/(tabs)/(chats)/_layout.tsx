@@ -2,6 +2,7 @@ import { Pressable } from 'react-native';
 import { Stack, Link } from 'expo-router';
 
 import { Ionicons } from '@expo/vector-icons';
+import { View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 
@@ -16,8 +17,9 @@ export default function ChatsLayout() {
           title: 'Chats',
           headerBackVisible: false,
           headerLargeTitle: true,
-          headerTransparent: true,
-          headerBlurEffect: 'regular',
+          headerStyle: {
+            backgroundColor: Colors[colorScheme ?? 'light'].background
+          },
           headerRight: () => (
             <Link href='/(modals)/newChat' asChild>
               <Pressable>
@@ -32,7 +34,13 @@ export default function ChatsLayout() {
         }}
       />
       <Stack.Screen
-        name='[id]'
+        name="[id]"
+        options={{
+          headerBackTitleVisible: false,
+          headerStyle: {
+            backgroundColor: Colors[colorScheme ?? 'light'].background,
+          },
+        }}
       />
     </Stack>
   );
