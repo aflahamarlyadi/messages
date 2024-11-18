@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, type PropsWithChildren } from 'react';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 type AuthContextType = {
   user: FirebaseAuthTypes.User | null;
@@ -34,9 +35,22 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [initializing, setInitializing] = useState<boolean>(true);
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged((user: FirebaseAuthTypes.User | null) => {
+    const subscriber = auth().onAuthStateChanged(async (user: FirebaseAuthTypes.User | null) => {
       setUser(user);
       if (initializing) setInitializing(false);
+
+      if (user) {
+        const userDocument = await firestore().collection("users").doc(user.uid).get();
+        if (!userDocument.exists) {
+          await firestore().collection("users").doc(user.uid).set({
+            _id: user.uid,
+            phoneNumber: user.phoneNumber,
+            displayName: null,
+            photoURL: null,
+            createdAt: firestore.FieldValue.serverTimestamp(),
+          });
+        }
+      }
     });
 
     return subscriber;
