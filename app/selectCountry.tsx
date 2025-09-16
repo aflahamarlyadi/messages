@@ -5,6 +5,7 @@ import { Stack, useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import { countries } from '@/constants/Countries';
+import { Country } from '@/types/Country';
 
 const CountryItem = memo(({ item, onSelect }: { item: Country; onSelect: (country: Country) => void }) => {
   return (

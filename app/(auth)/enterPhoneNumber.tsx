@@ -7,6 +7,7 @@ import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
+import { Country } from '@/types/Country';
 
 const EnterPhoneNumberScreen = () => {
   const colorScheme = useColorScheme();

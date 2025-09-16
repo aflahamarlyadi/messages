@@ -1,4 +1,6 @@
-export const countries = [
+import { Country } from '@/types/Country';
+
+export const countries: Country[] = [
   {name: 'Afghanistan', code: 'AF', callingCode: '+93', flag: '🇦🇫'},
   {name: 'Åland Islands', code: 'AX', callingCode: '+358', flag: '🇦🇽'},
   {name: 'Albania', code: 'AL', callingCode: '+355', flag: '🇦🇱'},

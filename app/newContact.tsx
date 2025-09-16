@@ -7,6 +7,7 @@ import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 import { useContacts } from '@/context/ContactsContext';
+import { Country } from '@/types/Country';
 
 const NewContactModal = () => {
   const colorScheme = useColorScheme();
