@@ -35,25 +35,25 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [initializing, setInitializing] = useState<boolean>(true);
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(async (user: FirebaseAuthTypes.User | null) => {
+    const unsubscribe = auth().onAuthStateChanged(async (user: FirebaseAuthTypes.User | null) => {
       setUser(user);
       if (initializing) setInitializing(false);
 
       if (user) {
-        const userDocument = await firestore().collection("users").doc(user.uid).get();
+        const userDocument = await firestore().collection('users').doc(user.uid).get();
         if (!userDocument.exists) {
-          await firestore().collection("users").doc(user.uid).set({
-            _id: user.uid,
+          await firestore().collection('users').doc(user.uid).set({
             phoneNumber: user.phoneNumber,
-            displayName: null,
-            photoURL: null,
+            name: null,
+            profilePicture: null,
+            email: null,
             createdAt: firestore.FieldValue.serverTimestamp(),
           });
         }
       }
     });
 
-    return subscriber;
+    return unsubscribe;
   }, []);
 
   const signInWithPhoneNumber = async (phoneNumber: string) => {
