@@ -11,17 +11,17 @@ import * as Contacts from 'expo-contacts';
 
 type Section = {
   title: string;
-  data: Contacts.Contact[];
+  data: Contact[];
 };
 
 const AddMembersModal = () => {
   const colorScheme = useColorScheme();
   const router = useRouter();
-  const { contacts, loading, error } = useContacts();
+  const { registeredContacts, loading, error } = useContacts();
   const [groupMembers, setGroupMembers] = useState([]);
 
-  const getSections = (contacts: Contacts.Contact[]): Section[] => {
-    const sections: { [key: string]: Contacts.Contact[] } = {};
+  const getSections = (contacts: Contact[]): Section[] => {
+    const sections: { [key: string]: Contact[] } = {};
     
     contacts.forEach((contact) => {
       const firstChar = (contact.name || "").charAt(0).toUpperCase();
@@ -44,7 +44,7 @@ const AddMembersModal = () => {
       }));
   };
 
-  const sections: Section[] = getSections(contacts || []);
+  const sections: Section[] = getSections(registeredContacts || []);
 
   return (
     <View style={styles.container}>
