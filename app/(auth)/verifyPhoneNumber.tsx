@@ -1,6 +1,6 @@
 import { StyleSheet, TextInput, Pressable, ActivityIndicator, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 
 import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -12,8 +12,6 @@ const CELL_COUNT = 6;
 
 const VerifyPhoneNumberScreen = () => {
   const colorScheme = useColorScheme();
-
-  const router = useRouter();
 
   const { confirmCode } = useAuth();
 
