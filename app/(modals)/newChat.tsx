@@ -1,25 +1,29 @@
-import { StyleSheet, Pressable, SectionList, Image } from 'react-native';
+import { StyleSheet, Pressable, SectionList, FlatList, Image } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import * as Contacts from 'expo-contacts';
 
 import { Ionicons } from '@expo/vector-icons';
 import { Text, View } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 import { useContacts } from '@/context/ContactsContext';
+import { useAuth } from '@/context/AuthContext';
+
+import { Contact } from '@/types/Contact';
+import { ChatService } from '@/modules/chats/services/chatService';
 
 type Section = {
   title: string;
-  data: Contacts.Contact[];
+  data: Contact[];
 };
 
 const NewChatModal = () => {
   const colorScheme = useColorScheme();
   const router = useRouter();
-  const { contacts, loading, error } = useContacts();
+  const { registeredContacts, unregisteredContacts, loading, error } = useContacts();
+  const { user } = useAuth();
 
-  const getSections = (contacts: Contacts.Contact[]): Section[] => {
-    const sections: { [key: string]: Contacts.Contact[] } = {};
+  const getSections = (contacts: Contact[]): Section[] => {
+    const sections: { [key: string]: Contact[] } = {};
     
     contacts.forEach((contact) => {
       const firstChar = (contact.name || "").charAt(0).toUpperCase();
@@ -42,7 +46,25 @@ const NewChatModal = () => {
       }));
   };
 
-  const sections: Section[] = getSections(contacts || []);
+  const sections: Section[] = getSections(registeredContacts || []);
+
+  const handleChatPress = async (contact: Contact) => {
+    if (!user?.uid || !contact.id) return;
+    
+    try {
+      const chatId = await ChatService.startPrivateChat(user.uid, contact.id);
+      router.navigate({
+        pathname: `/(tabs)/(chats)/[id]`,
+        params: { 
+          id: chatId,
+          name: contact.name,
+          image: contact.profilePicture
+        }
+      });
+    } catch (error) {
+      console.error("Failed to start chat:", error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -60,15 +82,19 @@ const NewChatModal = () => {
         sections={sections}
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
-          <View style={styles.contactContainer}>
-            <Text style={styles.contactText}>{item.name}</Text>
-          </View>
+          <Pressable 
+            style={styles.contactContainer}
+            onPress={() => handleChatPress(item)}
+          >
+            <Image style={styles.contactImage} source={item.profilePicture ? { uri: item.profilePicture } : require('@/assets/images/placeholder-profile.png')}/>
+            <Text style={styles.contactName}>{item.name}</Text>
+          </Pressable>
         )}
         renderSectionHeader={({ section: { title } }) => (
           <Text style={styles.sectionHeader}>{title}</Text>
         )}
         ListHeaderComponent={
-          <View>
+          <View style={{ paddingTop: 16 }}>
             <Pressable 
               style={styles.optionContainer}
               onPress={() => { router.push('/newContact') }}
@@ -86,8 +112,24 @@ const NewChatModal = () => {
             </Pressable>
           </View>
         }
+        ListFooterComponent={
+          <View>
+            <Text style={styles.sectionHeader}>Invite to Messages</Text>
+            <FlatList
+              data={unregisteredContacts}
+              keyExtractor={(item) => item.name}
+              renderItem={({ item }) => (
+                <Pressable 
+                  style={styles.contactContainer}
+                >
+                  <Image style={styles.contactImage} source={require('@/assets/images/placeholder-profile.png')}/>
+                  <Text style={styles.contactName}>{item.name}</Text>
+                </Pressable>
+              )}
+            />
+          </View>
+        }
       />
-      
     </View>
   );
 };
@@ -102,8 +144,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 16,
-    marginLeft: 16,
-    paddingVertical: 16,
+    padding: 16,
   },
   optionText: {
     fontSize: 16,
@@ -112,16 +153,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 16,
-    marginHorizontal: 16,
-    paddingVertical: 8,
+    padding: 16,
   },
   contactImage: {
     width: 40,
     height: 40,
     borderRadius: 20,
   },
-  contactText: {
+  contactName: {
     fontSize: 16,
+  },
+  contactPhone: {
+    fontSize: 14,
   },
   sectionHeader: {
     paddingLeft: 16,
